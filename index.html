@@ -660,6 +660,7 @@ document.getElementById("openForm2").onclick=openForm;
 document.getElementById("fClose").onclick=closeForm;
 ov.addEventListener("click",e=>{if(e.target===ov)closeForm()});
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!ov.hidden)closeForm()});
+const W3F_KEY="";
 const cc=document.getElementById("fCC"),phIn=document.getElementById("fPhone");
 function telLocal(){let d=phIn.value.replace(/\D/g,"");const c=cc.value;
  if(phIn.value.trim().startsWith("+")||d.startsWith(c)&&d.length>c.length+6){if(d.startsWith(c))d=d.slice(c.length)}
@@ -679,7 +680,7 @@ document.getElementById("fForm").addEventListener("submit",e=>{e.preventDefault(
  const sb=document.querySelector("#fForm [type=submit]"),note=document.getElementById("fErr");
  if(sb){sb.disabled=true;sb.dataset.t=sb.dataset.t||sb.textContent;sb.textContent="Надсилаємо…"}
  note.textContent="";
- fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(fd).toString()}).then(r=>{if(!r.ok)throw 0;
+ (W3F_KEY?fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:W3F_KEY,subject:"Нова заявка з сайту CHILI: "+(fd.get("name")||""),from_name:"Сайт CHILI Marketing","Імʼя":fd.get("name"),"Телефон":fd.get("phone"),"Пакет":fd.get("package"),"Бізнес / Instagram":fd.get("biz"),"Задача":fd.get("msg"),botcheck:fd.get("bot-field")||""})}).then(r=>r.json()).then(j=>({ok:!!j.success})):fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(fd).toString()})).then(r=>{if(!r.ok)throw 0;
   fbox.style.setProperty("--h",1);burn(3);
   document.getElementById("fForm").hidden=true;document.getElementById("fDone").hidden=false;
   document.getElementById("dTitle").textContent="Дякуємо, "+n.value.trim()+"!";
