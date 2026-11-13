@@ -522,6 +522,7 @@ img{height:auto}
         <div class="fld full"><label for="fMsg">Що хочете підпалити?</label><textarea id="fMsg" name="msg" placeholder="Коротко про задачу"></textarea></div>
       </div>
       <button class="btn fsend" type="submit" id="fSend">Запалити</button>
+      <p class="fnote" id="fErr" role="alert" style="color:#FFC9D3;margin-top:10px"></p>
     </form>
     <div class="fdone" id="fDone" hidden>
       <span class="big" aria-hidden="true">🌶</span>
@@ -632,11 +633,15 @@ document.getElementById("fForm").addEventListener("submit",e=>{e.preventDefault(
  if(!nOk||!pOk){(nOk?ph:n).focus();return}
  document.getElementById("fPkg").value=pkgs[lvl].name;
  const fd=new FormData(document.getElementById("fForm"));
- fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(fd).toString()}).then(r=>{if(!r.ok)throw 0}).catch(()=>{document.getElementById("fNote").textContent="Не вдалося надіслати. Подзвоніть нам: +38 (066) 371-37-20"});
- fbox.style.setProperty("--h",1);burn(3);
- document.getElementById("fForm").hidden=true;document.getElementById("fDone").hidden=false;
- document.getElementById("dTitle").textContent="Дякуємо, "+n.value.trim()+"!";
- document.getElementById("dText").textContent="Пакет «"+pkgs[lvl].name+"». Менеджер CHILI передзвонить на "+ph.value.trim()+" і розпалить усе разом з вами.";
+ const sb=document.querySelector("#fForm [type=submit]"),note=document.getElementById("fErr");
+ if(sb){sb.disabled=true;sb.dataset.t=sb.dataset.t||sb.textContent;sb.textContent="Надсилаємо…"}
+ note.textContent="";
+ fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(fd).toString()}).then(r=>{if(!r.ok)throw 0;
+  fbox.style.setProperty("--h",1);burn(3);
+  document.getElementById("fForm").hidden=true;document.getElementById("fDone").hidden=false;
+  document.getElementById("dTitle").textContent="Дякуємо, "+n.value.trim()+"!";
+  document.getElementById("dText").textContent="Пакет «"+pkgs[lvl].name+"». Менеджер CHILI передзвонить на "+ph.value.trim()+" і розпалить усе разом з вами.";
+ }).catch(()=>{note.innerHTML='Не вдалося надіслати заявку. Подзвоніть нам: <a href="tel:+380663713720">+38 (066) 371-37-20</a>'}).finally(()=>{if(sb){sb.disabled=false;sb.textContent=sb.dataset.t}});
 });
 
 
