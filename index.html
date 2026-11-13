@@ -243,6 +243,12 @@ footer{background:var(--ink);color:var(--paper)}
 .fld label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink)}
 .fld input,.fld textarea{background:rgba(255,243,238,.08);border:1.5px solid rgba(255,201,211,.35);border-radius:14px;padding:12px 14px;color:var(--paper);font:16px var(--body);transition:border-color .2s,box-shadow .2s;width:100%}
 .fld textarea{resize:vertical;min-height:84px}
+.tel{display:flex;gap:8px;min-width:0}
+.tel select{flex:none;appearance:none;-webkit-appearance:none;background:rgba(255,243,238,.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23FFC9D3' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 10px center;border:1.5px solid rgba(255,201,211,.35);border-radius:14px;padding:12px 26px 12px 12px;color:var(--paper);font:16px var(--body);cursor:pointer}
+.tel select option{color:#2B0906;background:#fff}
+.tel select:focus{outline:none;border-color:var(--glow);box-shadow:0 0 0 3px color-mix(in srgb,var(--glow) 35%,transparent)}
+.tel input{flex:1;min-width:0}
+
 .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--glow);box-shadow:0 0 0 3px color-mix(in srgb,var(--glow) 35%,transparent)}
 .fld input[aria-invalid="true"]{border-color:#FF8A7A}
 .err{font-size:13px;color:#FFB3A8;min-height:1em}
@@ -517,7 +523,7 @@ img{height:auto}
       <div class="chips" role="group" aria-label="Пакет" id="chips"></div>
       <div class="fgrid">
         <div class="fld"><label for="fName">Імʼя</label><input id="fName" name="name" autocomplete="name" required><span class="err" id="eName"></span></div>
-        <div class="fld"><label for="fPhone">Телефон</label><input id="fPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+380" required><span class="err" id="ePhone"></span></div>
+        <div class="fld"><label for="fPhone">Телефон</label><div class="tel"><select id="fCC" aria-label="Код країни"><option value="380" selected aria-label="Україна +380">🇺🇦 +380</option><option value="48" aria-label="Польща +48">🇵🇱 +48</option><option value="49" aria-label="Німеччина +49">🇩🇪 +49</option><option value="420" aria-label="Чехія +420">🇨🇿 +420</option><option value="421" aria-label="Словаччина +421">🇸🇰 +421</option><option value="36" aria-label="Угорщина +36">🇭🇺 +36</option><option value="40" aria-label="Румунія +40">🇷🇴 +40</option><option value="373" aria-label="Молдова +373">🇲🇩 +373</option><option value="43" aria-label="Австрія +43">🇦🇹 +43</option><option value="39" aria-label="Італія +39">🇮🇹 +39</option><option value="34" aria-label="Іспанія +34">🇪🇸 +34</option><option value="33" aria-label="Франція +33">🇫🇷 +33</option><option value="31" aria-label="Нідерланди +31">🇳🇱 +31</option><option value="44" aria-label="Велика Британія +44">🇬🇧 +44</option><option value="370" aria-label="Литва +370">🇱🇹 +370</option><option value="371" aria-label="Латвія +371">🇱🇻 +371</option><option value="372" aria-label="Естонія +372">🇪🇪 +372</option><option value="1" aria-label="США / Канада +1">🇺🇸 +1</option></select><input id="fPhone" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="66 123 45 67" required></div><input type="hidden" name="phone" id="fPhoneFull"><span class="err" id="ePhone"></span></div>
         <div class="fld full"><label for="fBiz">Бізнес або Instagram</label><input id="fBiz" name="biz" placeholder="@вашбренд або назва компанії"></div>
         <div class="fld full"><label for="fMsg">Що хочете підпалити?</label><textarea id="fMsg" name="msg" placeholder="Коротко про задачу"></textarea></div>
       </div>
@@ -626,12 +632,21 @@ document.getElementById("openForm2").onclick=openForm;
 document.getElementById("fClose").onclick=closeForm;
 ov.addEventListener("click",e=>{if(e.target===ov)closeForm()});
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!ov.hidden)closeForm()});
+const cc=document.getElementById("fCC"),phIn=document.getElementById("fPhone");
+function telLocal(){let d=phIn.value.replace(/\D/g,"");const c=cc.value;
+ if(phIn.value.trim().startsWith("+")||d.startsWith(c)&&d.length>c.length+6){if(d.startsWith(c))d=d.slice(c.length)}
+ if(c==="380"&&d.startsWith("0"))d=d.slice(1);return d}
+function telFull(){const d=telLocal();const c=cc.value;if(c==="380"?d.length!==9:(d.length<6||d.length>13))return "";
+ return c==="380"?"+380 "+d.replace(/(\d{2})(\d{3})(\d{2})(\d{2})/,"$1 $2 $3 $4"):"+"+c+" "+d}
+phIn.addEventListener("input",()=>{if(cc.value!=="380")return;const raw=phIn.value;if(/^\+/.test(raw)&&!raw.startsWith("+380"))return;
+ const d=telLocal().slice(0,9);const parts=[d.slice(0,2),d.slice(2,5),d.slice(5,7),d.slice(7,9)].filter(Boolean);phIn.value=parts.join(" ")});
+cc.addEventListener("change",()=>{phIn.placeholder=cc.value==="380"?"66 123 45 67":"Номер телефону";phIn.focus()});
 document.getElementById("fForm").addEventListener("submit",e=>{e.preventDefault();
  const n=document.getElementById("fName"),ph=document.getElementById("fPhone");let ok=true;
  const nOk=n.value.trim().length>1;n.setAttribute("aria-invalid",!nOk);document.getElementById("eName").textContent=nOk?"":"Напишіть, як до вас звертатися";
- const digits=ph.value.replace(/\D/g,"");const pOk=digits.length>=10;ph.setAttribute("aria-invalid",!pOk);document.getElementById("ePhone").textContent=pOk?"":"Вкажіть номер, наприклад +380 66 123 45 67";
+ const full=telFull();const pOk=!!full;ph.setAttribute("aria-invalid",!pOk);document.getElementById("ePhone").textContent=pOk?"":(cc.value==="380"?"Вкажіть номер, наприклад 66 123 45 67":"Вкажіть номер телефону");
  if(!nOk||!pOk){(nOk?ph:n).focus();return}
- document.getElementById("fPkg").value=pkgs[lvl].name;
+ document.getElementById("fPkg").value=pkgs[lvl].name;document.getElementById("fPhoneFull").value=full;
  const fd=new FormData(document.getElementById("fForm"));
  const sb=document.querySelector("#fForm [type=submit]"),note=document.getElementById("fErr");
  if(sb){sb.disabled=true;sb.dataset.t=sb.dataset.t||sb.textContent;sb.textContent="Надсилаємо…"}
@@ -640,7 +655,7 @@ document.getElementById("fForm").addEventListener("submit",e=>{e.preventDefault(
   fbox.style.setProperty("--h",1);burn(3);
   document.getElementById("fForm").hidden=true;document.getElementById("fDone").hidden=false;
   document.getElementById("dTitle").textContent="Дякуємо, "+n.value.trim()+"!";
-  document.getElementById("dText").textContent="Пакет «"+pkgs[lvl].name+"». Менеджер CHILI передзвонить на "+ph.value.trim()+" і розпалить усе разом з вами.";
+  document.getElementById("dText").textContent="Пакет «"+pkgs[lvl].name+"». Менеджер CHILI передзвонить на "+full+" і розпалить усе разом з вами.";
  }).catch(()=>{note.innerHTML='Не вдалося надіслати заявку. Подзвоніть нам: <a href="tel:+380663713720">+38 (066) 371-37-20</a>'}).finally(()=>{if(sb){sb.disabled=false;sb.textContent=sb.dataset.t}});
 });
 
