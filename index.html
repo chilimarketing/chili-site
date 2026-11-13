@@ -329,13 +329,17 @@ footer{background:var(--ink);color:var(--paper)}
 }
 .svc-n,.svc-s{display:none}
 @media (max-width:760px){
- .services{grid-template-columns:1fr 1fr;gap:10px}
- .svc{padding:16px 14px;gap:8px;border-radius:20px;min-width:0;transition:transform .15s ease,box-shadow .15s ease;-webkit-tap-highlight-color:transparent}
- .svc:hover{transform:none;box-shadow:none}
- .svc:active{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--chili)}
- .svc .label{font-size:9.5px;letter-spacing:.1em;line-height:1.35}
- .svc h3{font-size:clamp(13px,3.75vw,16px);line-height:1.12;margin:0;hyphens:manual;-webkit-hyphens:manual}
- .svc p{font-size:13px;line-height:1.4}
+ .services{grid-template-columns:1fr 1fr;gap:12px}
+ .svc{position:relative;overflow:hidden;background:#fff;border:2px solid var(--ink);border-radius:20px;padding:42px 13px 40px;gap:7px;min-width:0;box-shadow:4px 4px 0 var(--ink);transition:transform .15s ease,box-shadow .15s ease;-webkit-tap-highlight-color:transparent}
+ .svc:hover{transform:none;box-shadow:4px 4px 0 var(--ink)}
+ .svc:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+ .svc::after{content:"";position:absolute;left:13px;bottom:0;width:36px;height:5px;border-radius:5px 5px 0 0;background:var(--chili)}
+ .svc .label{position:absolute;top:12px;left:12px;margin:0;background:var(--pink);color:var(--ink);border:0;border-radius:99px;padding:5px 9px 4px;font-size:8.5px;letter-spacing:.07em;line-height:1;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
+ @media (max-width:374px){.svc .label{font-size:7.5px;letter-spacing:.05em}}
+ .svc-n{display:block;position:absolute;bottom:7px;right:10px;font:normal 28px/1 var(--display);color:transparent;-webkit-text-stroke:1.3px var(--chili);font-style:normal;pointer-events:none}
+ .svc h3{font-size:clamp(13px,3.75vw,16px);line-height:1.12;margin:6px 0 0;hyphens:manual;-webkit-hyphens:manual}
+ .svc p{display:none}
+ .svc-s{display:block;font-size:12.5px;line-height:1.38;color:color-mix(in srgb,var(--ink) 78%,transparent)}
  .svc-dots{display:none!important}
 }
 .svc-dots{display:none;justify-content:center;gap:6px;margin-top:6px}
