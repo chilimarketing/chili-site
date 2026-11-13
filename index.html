@@ -204,7 +204,7 @@ a.c-row:hover{padding-left:14px}
 a.c-row:hover .ar{background:var(--paper);transform:rotate(-45deg)}
 a.c-row:hover .ar path{stroke:var(--chili)}
 .c-actions{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
-.c-form-btn{background:var(--lime);border-color:var(--lime);color:var(--ink);padding:16px 26px;font-size:16px}
+.c-form-btn{gap:10px;background:var(--lime);border-color:var(--lime);color:var(--ink);padding:16px 26px;font-size:16px}
 @media (max-width:860px){.c-wrap{grid-template-columns:1fr}}
 @media (max-width:460px){.c-row{grid-template-columns:auto 1fr 28px}.c-row .k{font-size:0;gap:0}.call{padding-right:22px}}
 footer{background:var(--ink);color:var(--paper)}
@@ -305,7 +305,7 @@ footer{background:var(--ink);color:var(--paper)}
  .prof{padding:20px 18px;margin-top:40px}
  .p-top{grid-template-columns:72px 1fr!important;gap:14px!important;align-items:center}
  .p-pep{width:72px!important;margin-top:-56px}
- .p-user{font-size:28px}
+ .p-user{font-size:clamp(19px,calc((100vw - 166px) / 8.9),28px);white-space:nowrap}
  .p-bio{font-size:14px;margin:8px 0 12px}
  .p-row{grid-column:1/-1}
  .p-top>div:last-child{display:contents}
@@ -313,7 +313,8 @@ footer{background:var(--ink);color:var(--paper)}
  .p-top .p-bio{grid-column:1/-1}
  .hl-band{margin-top:16px}
  .hl{padding-top:20px}
- .tip{min-height:52px}
+ .tip{min-height:40px}
+ .tip-hint{padding-top:6px}
  .c-lead{margin-bottom:18px;font-size:16px}
  .contact h2{margin:8px 0 12px}
  .c-actions{flex-direction:column;align-items:stretch;gap:10px}
@@ -502,7 +503,7 @@ img{height:auto}
       <p class="c-lead">Подзвоніть або залиште заявку, і ми запропонуємо, з чого почати.</p>
       <div class="c-actions">
         <a class="call" href="tel:+380663713720"><span class="call-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="#2B0906"/></svg></span><span><b>+38 (066) 371-37-20</b><small>Натисніть, щоб подзвонити</small></span></a>
-        <button class="btn c-form-btn" type="button" id="openForm2">🌶 Залишити заявку</button>
+        <button class="btn c-form-btn" type="button" id="openForm2"><span aria-hidden="true">🌶</span><span>Залишити заявку</span></button>
       </div>
     </div>
     <ul class="c-list">
