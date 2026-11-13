@@ -327,16 +327,15 @@ footer{background:var(--ink);color:var(--paper)}
  .p-row{gap:8px}.p-row .btn{padding:9px 14px;font-size:13px;min-height:40px}
  .c-row{padding-block:13px}
 }
-.svc-n,.svc-s{display:none}
+.svc-n,.svc-s,.svc-tag{display:none}
 @media (max-width:760px){
  .services{grid-template-columns:1fr 1fr;gap:12px}
- .svc{position:relative;overflow:hidden;background:#fff;border:2px solid var(--ink);border-radius:20px;padding:42px 13px 40px;gap:7px;min-width:0;box-shadow:4px 4px 0 var(--ink);transition:transform .15s ease,box-shadow .15s ease;-webkit-tap-highlight-color:transparent}
+ .svc{position:relative;overflow:hidden;background:#fff;border:2px solid var(--ink);border-radius:20px;padding:46px 13px 24px;gap:7px;min-width:0;box-shadow:4px 4px 0 var(--ink);transition:transform .15s ease,box-shadow .15s ease;-webkit-tap-highlight-color:transparent}
  .svc:hover{transform:none;box-shadow:4px 4px 0 var(--ink)}
  .svc:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
  .svc::after{content:"";position:absolute;left:13px;bottom:0;width:36px;height:5px;border-radius:5px 5px 0 0;background:var(--chili)}
- .svc .label{position:absolute;top:12px;left:12px;margin:0;background:var(--pink);color:var(--ink);border:0;border-radius:99px;padding:5px 9px 4px;font-size:8.5px;letter-spacing:.07em;line-height:1;white-space:nowrap;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
- @media (max-width:374px){.svc .label{font-size:7.5px;letter-spacing:.05em}}
- .svc-n{display:block;position:absolute;bottom:7px;right:10px;font:normal 28px/1 var(--display);color:transparent;-webkit-text-stroke:1.3px var(--chili);font-style:normal;pointer-events:none}
+ .svc .label{display:none}
+ .svc-tag{display:inline-block;position:absolute;top:12px;left:12px;max-width:calc(100% - 24px);background:var(--pink);color:var(--ink);border-radius:99px;padding:6px 10px 5px;font:700 11px/1.15 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
  .svc h3{font-size:clamp(13px,3.75vw,16px);line-height:1.12;margin:6px 0 0;hyphens:manual;-webkit-hyphens:manual}
  .svc p{display:none}
  .svc-s{display:block;font-size:12.5px;line-height:1.38;color:color-mix(in srgb,var(--ink) 78%,transparent)}
@@ -421,10 +420,10 @@ img{height:auto}
       <p>Кожну послугу можна взяти окремо. А якщо поєднати кілька, маркетинг стає гострішим.</p>
     </div>
     <div class="services">
-      <article class="svc"><i class="svc-n" aria-hidden="true">01</i><span class="label">Instagram · Facebook</span><h3>SMM-супровід</h3><p>Контент-стратегія, зйомки, фото, відео й тексти, які залучають аудиторію та формують довіру до бренду.</p><span class="svc-s">Контент, зйомки й тексти, яким довіряють</span></article>
-      <article class="svc"><i class="svc-n" aria-hidden="true">02</i><span class="label">Meta Ads</span><h3>Таргетована реклама</h3><p>Реклама в Instagram і Facebook, яка приводить клієнтів. Готуємо креативи, тестуємо й оптимізуємо.</p><span class="svc-s">Instagram і Facebook, що приводять клієнтів</span></article>
-      <article class="svc"><i class="svc-n" aria-hidden="true">03</i><span class="label">Google Ads</span><h3>Google-реклама</h3><p>Контекстна та банерна реклама в Google. Вас знаходять саме тоді, коли шукають. Можна замовити окремо.</p><span class="svc-s">Вас знаходять, коли шукають. Можна окремо</span></article>
-      <article class="svc"><i class="svc-n" aria-hidden="true">04</i><span class="label">Бренд</span><h3>Брендинг та візуальний стиль</h3><p>Неймінг, логотип, брендбук та айдентика, що роблять бренд впізнаваним.</p><span class="svc-s">Неймінг, логотип, брендбук, айдентика</span></article>
+      <article class="svc"><span class="svc-tag">📱 Соцмережі</span><span class="label">Instagram · Facebook</span><h3>SMM-супровід</h3><p>Контент-стратегія, зйомки, фото, відео й тексти, які залучають аудиторію та формують довіру до бренду.</p><span class="svc-s">Ведемо Instagram і Facebook: контент, зйомки, тексти</span></article>
+      <article class="svc"><span class="svc-tag">🎯 Нові клієнти</span><span class="label">Meta Ads</span><h3>Таргетована реклама</h3><p>Реклама в Instagram і Facebook, яка приводить клієнтів. Готуємо креативи, тестуємо й оптимізуємо.</p><span class="svc-s">Показуємо рекламу тим, хто справді може купити</span></article>
+      <article class="svc"><span class="svc-tag">🔍 Пошук Google</span><span class="label">Google Ads</span><h3>Google-реклама</h3><p>Контекстна та банерна реклама в Google. Вас знаходять саме тоді, коли шукають. Можна замовити окремо.</p><span class="svc-s">Вас знаходять саме тоді, коли шукають. Можна окремо</span></article>
+      <article class="svc"><span class="svc-tag">✨ Стиль бренду</span><span class="label">Бренд</span><h3>Брендинг та візуальний стиль</h3><p>Неймінг, логотип, брендбук та айдентика, що роблять бренд впізнаваним.</p><span class="svc-s">Назва, логотип і фірмовий стиль, які запамʼятовують</span></article>
     </div>
     <div class="svc-dots" id="svcDots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
   </div>
