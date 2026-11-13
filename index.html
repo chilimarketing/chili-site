@@ -144,9 +144,11 @@ input[type=range]::-moz-range-thumb{width:40px;height:40px;border-radius:50%;bac
 .p-row .btn.fill{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .p-row .ghost{border-color:var(--ink);color:var(--ink)}
 .hl-band{background:var(--ink);border-radius:26px;margin-top:clamp(24px,3vw,36px);padding:8px clamp(10px,2vw,20px) 14px;position:relative;z-index:1}
-.hl{display:flex;gap:clamp(16px,2.6vw,32px);overflow-x:auto;padding:30px 10px 8px;scrollbar-width:none;scroll-snap-type:x proximity}
+.hl{display:flex;gap:clamp(16px,2.6vw,32px);overflow:hidden;padding:30px 10px 8px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.hl .h{will-change:transform}
+.hl img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 .hl::-webkit-scrollbar{display:none}
-.hl.hl-static{justify-content:center;flex-wrap:wrap}
+.hl.hl-static{justify-content:center;flex-wrap:wrap;cursor:auto}
 .hl.drag{cursor:grabbing;user-select:none}.hl.drag .h{pointer-events:none}
 .h{all:unset;box-sizing:border-box;flex:none;width:96px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;scroll-snap-align:start}
 .h:focus-visible .h-ring{outline:3px solid var(--lime);outline-offset:4px}
@@ -314,7 +316,11 @@ footer{background:var(--ink);color:var(--paper)}
  .tip{min-height:52px}
  .c-lead{margin-bottom:18px;font-size:16px}
  .contact h2{margin:8px 0 12px}
- .c-actions{flex-direction:row;flex-wrap:wrap;gap:10px}
+ .c-actions{flex-direction:column;align-items:stretch;gap:10px}
+ .c-actions>*{width:100%}.c-form-btn{justify-content:center;min-height:58px}
+ .call{padding:10px 18px 10px 10px}
+ .call b{white-space:nowrap;font-size:clamp(17px,5.4vw,21px)!important}
+ .call small{font-size:10px;letter-spacing:.1em}
  .c-list{margin-top:22px}
  .p-row{gap:8px}.p-row .btn{padding:9px 14px;font-size:13px;min-height:40px}
  .c-row{padding-block:13px}
@@ -590,29 +596,27 @@ addEventListener("keydown",e=>{if(e.key==="Escape"&&d.classList.contains("open")
 const sv=document.querySelector(".services"),dots=[...document.querySelectorAll("#svcDots i")];
 sv&&sv.addEventListener("scroll",()=>{const c=[...sv.children];let best=0,bd=1e9;c.forEach((el,i)=>{const dd=Math.abs(el.getBoundingClientRect().left-sv.getBoundingClientRect().left);if(dd<bd){bd=dd;best=i}});dots.forEach((t,i)=>t.classList.toggle("on",i===best))},{passive:true});
 const hl=document.getElementById("hl");if(hl){
- /* Нескінченне коло без копій: елемент, що виїхав зліва, переставляється в кінець (і навпаки) */
- hl.style.scrollSnapType="none";hl.style.scrollBehavior="auto";
- const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
- let paused=false,resumeT,visible=false,acc=0,loop=false;
- const gap=()=>parseFloat(getComputedStyle(hl).columnGap)||0;
- const fits=()=>hl.scrollWidth-hl.clientWidth>hl.firstElementChild.offsetWidth+gap();
- function setup(){loop=fits();hl.classList.toggle("hl-static",!loop)}
- function wrap(){if(!loop)return;const w=hl.firstElementChild.offsetWidth+gap();let n=0;
-  while(hl.scrollLeft>=w&&n++<20){hl.appendChild(hl.firstElementChild);hl.scrollLeft-=w}
-  n=0;while(hl.scrollLeft<2&&n++<20){const last=hl.lastElementChild,lw=last.offsetWidth+gap();hl.prepend(last);hl.scrollLeft+=lw}}
- hl.addEventListener("scroll",wrap,{passive:true});
- const pause=()=>{paused=true;clearTimeout(resumeT)},resume=()=>{clearTimeout(resumeT);resumeT=setTimeout(()=>paused=false,2500)};
- hl.addEventListener("pointerenter",e=>{if(e.pointerType==="mouse")pause()});hl.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse")resume()});
- hl.addEventListener("touchstart",pause,{passive:true});hl.addEventListener("touchend",resume,{passive:true});hl.addEventListener("focusin",pause);hl.addEventListener("focusout",resume);
- /* перетягування мишкою */
- let dx=null,lx=0,moved=false;
- hl.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse"||!loop)return;dx=e.clientX;lx=e.clientX;moved=false});
- addEventListener("pointermove",e=>{if(dx===null)return;const d=e.clientX-dx;if(Math.abs(d)>5){moved=true;hl.classList.add("drag")}if(moved){hl.scrollLeft-=e.clientX-lx;wrap()}lx=e.clientX});
- addEventListener("pointerup",()=>{dx=null;setTimeout(()=>hl.classList.remove("drag"),0)});
+ /* Нескінченне коло без копій: кожен кружечок зсувається трансформом, вся стрічка під нашим контролем */
+ const items=[...hl.children],reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ let W=0,total=0,off=0,vel=0,loop=false,visible=false,paused=false,resumeT,drag=null,moved=false;
+ function measure(){items.forEach(it=>it.style.transform="");const g=parseFloat(getComputedStyle(hl).columnGap)||0;W=items[0].offsetWidth+g;total=W*items.length;
+  loop=total>hl.clientWidth+W;hl.classList.toggle("hl-static",!loop);render()}
+ function render(){if(!loop){items.forEach(it=>it.style.transform="");return}
+  off=((off%total)+total)%total;items.forEach((it,i)=>{let x=((i*W-off)%total+total)%total;if(x>total-W)x-=total;it.style.transform="translateX("+(x-i*W)+"px)"})}
+ const pause=()=>{paused=true;clearTimeout(resumeT)},resume=(ms=2500)=>{clearTimeout(resumeT);resumeT=setTimeout(()=>paused=false,ms)};
+ hl.addEventListener("pointerenter",e=>{if(e.pointerType==="mouse")pause()});hl.addEventListener("pointerleave",e=>{if(e.pointerType==="mouse"&&!drag)resume()});
+ hl.addEventListener("focusin",pause);hl.addEventListener("focusout",()=>resume());
+ hl.addEventListener("pointerdown",e=>{if(!loop||e.button>0)return;pause();vel=0;drag={id:e.pointerId,x:e.clientX,y:e.clientY,lx:e.clientX,lt:performance.now(),on:false};moved=false});
+ hl.addEventListener("pointermove",e=>{if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+  if(!drag.on){if(Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){drag.on=true;moved=true;hl.classList.add("drag");try{hl.setPointerCapture(e.pointerId)}catch(_){}}else if(Math.abs(dy)>8){drag=null;resume();return}else return}
+  const now=performance.now(),d=e.clientX-drag.lx;off-=d;vel=-d/Math.max(1,now-drag.lt)*16;drag.lx=e.clientX;drag.lt=now;render();e.preventDefault()});
+ const end=e=>{if(!drag||(e&&e.pointerId!==drag.id))return;const was=drag.on;drag=null;hl.classList.remove("drag");if(!was)vel=0;resume(e&&e.pointerType==="mouse"&&hl.matches(":hover")?1e9:2500)};
+ hl.addEventListener("pointerup",end);hl.addEventListener("pointercancel",end);
  hl.addEventListener("click",e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false}},true);
+ hl.addEventListener("wheel",e=>{if(!loop||Math.abs(e.deltaX)<=Math.abs(e.deltaY))return;e.preventDefault();pause();off+=e.deltaX;vel=0;render();resume()},{passive:false});
  new IntersectionObserver(es=>{visible=es[0].isIntersecting}).observe(hl);
- setup();if(loop)hl.scrollLeft=2;addEventListener("resize",()=>{setup()});
- function tick(){if(loop&&!reduce&&visible&&!paused&&dx===null){acc+=.45;if(acc>=1){const st=Math.floor(acc);acc-=st;hl.scrollLeft+=st}}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+ measure();addEventListener("resize",measure);document.fonts&&document.fonts.ready.then(measure);
+ function tick(){if(loop){if(!drag&&Math.abs(vel)>.05){off+=vel;vel*=.94;render()}else if(!drag&&!paused&&visible&&!reduce){vel=0;off+=.45;render()}}requestAnimationFrame(tick)}requestAnimationFrame(tick);
 }
 })();
 const CLIENTS=[{"n": "KVARTAL", "t": "Будівельна компанія", "p": "Івано-Франківськ"}, {"n": "MarMaros Apart-Hotel & Spa", "t": "Готель", "p": "Буковель"}, {"n": "iFranko", "t": "Магазин техніки Apple", "p": "Івано-Франківськ"}, {"n": "Rest&Ski Spa Resort", "t": "Готель", "p": "Буковель"}, {"n": "FoRest restaurant", "t": "Ресторан", "p": "Буковель"}, {"n": "GLASE", "t": "Кавʼярня", "p": "Коломия"}, {"n": "OZON Village", "t": "Котеджне містечко", "p": "Черніїв"}, {"n": "Westhills Cottage Town", "t": "Котеджне містечко", "p": "Буковель"}, {"n": "Powerful Progress", "t": "Спортивне харчування", "p": "Україна"}, {"n": "VD Group", "t": "Забудовник", "p": "Івано-Франківськ"}, {"n": "LIDS Engineering", "t": "Ліфтова компанія", "p": "Івано-Франківськ"}, {"n": "F3", "t": "Маркет здорового харчування", "p": "Івано-Франківськ"}, {"n": "Dr. Koroll Clinic", "t": "Естетична медицина", "p": "Івано-Франківськ"}];
