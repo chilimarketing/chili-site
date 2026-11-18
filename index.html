@@ -663,7 +663,7 @@ document.getElementById("openForm2").onclick=openForm;
 document.getElementById("fClose").onclick=closeForm;
 ov.addEventListener("click",e=>{if(e.target===ov)closeForm()});
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!ov.hidden)closeForm()});
-const W3F_KEY="";
+const W3F_KEY="65e80f5e-d354-482e-b837-2d52873ddb21";
 const cc=document.getElementById("fCC"),phIn=document.getElementById("fPhone");
 function telLocal(){let d=phIn.value.replace(/\D/g,"");const c=cc.value;
  if(phIn.value.trim().startsWith("+")||d.startsWith(c)&&d.length>c.length+6){if(d.startsWith(c))d=d.slice(c.length)}
